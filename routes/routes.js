@@ -40,7 +40,7 @@ module.exports = app => {
         });
 
         function updateDb() {
-            fs.writeFile("db/db.json",JSON.stringify(notes,'\t'),err => {
+            fs.writeFile('db/db.json', JSON.stringify(notes), (err) => {
                 if (err) throw err;
             });
         }
