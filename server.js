@@ -1,11 +1,10 @@
 // Dependencies
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
-
-// Initialize Express
+const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const routes = require('./routes/routes');
 
 // Setup data parsing
 app.use(express.urlencoded({ extended: true }));
