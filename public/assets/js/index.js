@@ -28,7 +28,7 @@ let activeNote = {};
 const getNotes = () =>
   fetch('/api/notes', {
     method: 'GET',
-    headers: {  
+    headers: {
       'Content-Type': 'application/json',
     },
   });
@@ -170,6 +170,12 @@ const renderNoteList = async (notes) => {
   }
 };
 
+const refreshButton = document.querySelector('.fas');
+
+const refreshPage = () => {
+  window.location.reload();
+};
+
 // Gets notes from the db and renders them to the sidebar
 const getAndRenderNotes = () => getNotes().then(renderNoteList);
 
@@ -178,6 +184,9 @@ if (window.location.pathname === '/notes') {
   newNoteBtn.addEventListener('click', handleNewNoteView);
   noteTitle.addEventListener('keyup', handleRenderSaveBtn);
   noteText.addEventListener('keyup', handleRenderSaveBtn);
+  refreshButton.addEventListener('click', refreshPage);
 };
+
+
 
 getAndRenderNotes();
