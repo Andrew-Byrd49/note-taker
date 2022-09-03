@@ -1,48 +1,41 @@
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
+const express = require('express');
+const { createNew } = require('../db/js/script');
+const router = require('express').Router();
+const uniqid = require('uniqid');
+const notes = require('../db/db.json');
 
-module.exports = app => {
+//GET /api/notes db.json route
+    router.get('/api/notes', (req, res) => {
+        console.log(notes)
+         res.json(notes);
+     });
 
-    fs.readFile('db/db.json', 'utf8', (err, data) => {
-        if (err) throw err;
+//POST /api/notes   receive new note and add to db.json
+    router.post('/api/notes', (req, res) => {
+        req.body.id = uniqid();
 
-        var notes = JSON.parse(data);
-
-        // API Routes
-        app.get('/api/notes', (req, res) => {
-            res.json(notes);
-        });
-
-        app.post('/api/notes', (req, res) => {
-            let newNote = req.body;
-            notes.push(newNote);
-            updateDb();
-            return console.log('New note added!');
-        });
-
-        app.get('/api/notes/:id', (req, res) => {
-            res.json(notes[req.params.id]);
-        });
-
-        app.delete('/api/notes/:id', (req, res) => {
-            notes.splice(req.params.id, 1);
-            updateDb();
-            return console.log('Note deleted!');
-        });
-
-        // HTML Routes
-        app.get('/notes', (req, res) => {
-            res.sendFile(path.join(__dirname, '../public/notes.html'));
-        });
-
-        app.get('*', (req, res) => {
-            res.sendFile(path.join(__dirname, '../public/index.html'));
-        });
-
-        function updateDb() {
-            fs.writeFile('db/db.json', JSON.stringify(notes), (err) => {
-                if (err) throw err;
-            });
-        }
+        let newNote = createNew(req.body, notes);
+        res.json(newNote);
     });
-}
+
+    router.delete("/api/notes/:id", (req, res) => {
+      notes.splice(req.params.id, 1);
+      updateDb();
+      console.log("Deleted note with id "+req.params.id);
+  });
+
+//GET /notes note.html route
+
+    router.get('/notes', (req, res) => {
+        res.sendFile(path.join(__dirname, "../public/notes.html"));
+    });
+
+//Get * index.html route
+
+   router.get('*', (req, res) => {
+       res.sendFile(path.join(__dirname, "../public/index.html"));
+   });
+
+module.exports = router 
